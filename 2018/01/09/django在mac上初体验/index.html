@@ -10,7 +10,7 @@
     <link rel="icon" href="/favicon.ico">
   
     
-  <title>关于我 | 朱梦迪的博客</title>
+  <title>django在mac上初体验 | 朱梦迪的博客</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.css" />
@@ -44,7 +44,7 @@
       
         <li class="nav-item">
           
-            <a href="/about" class="item-link active">关于我</a>
+            <a href="/about" class="item-link">关于我</a>
           
         </li>
       
@@ -56,18 +56,28 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>关于我</h1>
+          <h1>django在mac上初体验</h1>
           <div class='post-meta'>
             <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年01月09日</time>
             
             
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#django" class='tag'>django</a>
+
+
+            
           </div>
-          <blockquote>
-<p>以梦为马，欢迎指教</p>
-</blockquote>
-<p>🌎Location:Shanghai, China</p>
-<p>👻Github: <a href="http://github.com/jpmonty" target="_blank" rel="noopener">@mengdi.zhu</a></p>
-<p>📩Email: <a href="mailto:zhumengdi4893@dingtalk.com" target="_blank" rel="noopener">@zhumengdi</a></p>
+          <h2 id="Django-安装"><a href="#Django-安装" class="headerlink" title="Django 安装"></a>Django 安装</h2><p>在安装 Django 前，系统需要已经安装了Python的开发环境。python的安装不赘述，我们使用的版本是python3</p>
+<h3 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h3><p>从<a href="https://www.djangoproject.com/download" target="_blank" rel="noopener">https://www.djangoproject.com/download</a>下载最新的稳定版本：DJango-1.x.y.tar.gz，在页面右侧列表下载，如下图：<br><img src="http://www.runoob.com/wp-content/uploads/2015/01/71DA508B-8018-4C76-9D5A-946B518B7A4D.jpg" alt=""></p>
+<p>你也可以从 Github 上下载最新版，地址：<a href="https://github.com/django/django" target="_blank" rel="noopener">https://github.com/django/django</a><br><code>git clone https://github.com/django/django.git</code></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>进入解压后的目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd Django-1.x.y</span><br><span class="line">sudo python setup.py install</span><br></pre></td></tr></table></figure>
+<p>安装成功后会输出以下信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Processing dependencies for Django==1.x.y</span><br><span class="line">Finished processing dependencies for Django==1.x.y</span><br></pre></td></tr></table></figure></p>
+<p>再进入我们的站点目录，创建 Django 项目：<br><code>django-admin.py startproject testdj</code><br>启动服务：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd testdj # 切换到我们创建的项目</span><br><span class="line">$ python manage.py runserver</span><br><span class="line">……</span><br><span class="line">Starting development server at http://127.0.0.1:8000/</span><br><span class="line">Quit the server with CONTROL-C.</span><br></pre></td></tr></table></figure></p>
+<p>访问地址为<a href="http://127.0.0.1:8000/" target="_blank" rel="noopener">http://127.0.0.1:8000/</a><br>效果如图所示<br><img src="https://d1ro8r1rbfn3jf.cloudfront.net/ms_150763/i7uycxNSxjXJD1gAJEwQTbaKIcykyi/Django%253A%2Bthe%2BWeb%2Bframework%2Bfor%2Bperfectionists%2Bwith%2Bdeadlines.%2B2018-01-09%2B17-23-52.png?Expires=1515576253&amp;Signature=T690DimEWOvbe0KCQ0AOMrhyMDXO8yu893Z2AGzmnZ2XA7IEK0myV3tV9l9SRr5KQ-~24MLi1b9952c-4KkIQueCBvIDgnwNM8ZLInUPA2EfCYuxpzN3joYlCL25zd4gmhxb1V7~oK9-znE1v00v8Itj7KR1ZgljB-7K9p4bzUemG5guH0wTeAlZHB-16nYmbug2bL25vM-v7SczbJdpGhUXSUdtVMjLj8q8WD0sn8USp5MGzDZjCQtv5~z3rS3k7QzPgOI91QeuzD8TPkbJx3DYJ30XlQXDUF7WbDjxP69y~dVWaeMp61gKWWgNEKwqpr0Dn5vpXUsuJaWHI84~IA__&amp;Key-Pair-Id=APKAJHEJJBIZWFB73RSA" alt=""></p>
 
         </section>
     </article>
@@ -84,6 +94,13 @@
   </div>
   <aside>
     
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Django-安装"><span class="toc-number">1.</span> <span class="toc-text">Django 安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载安装包"><span class="toc-number">1.1.</span> <span class="toc-text">下载安装包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装"><span class="toc-number">1.2.</span> <span class="toc-text">安装</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
   </aside>
 </main>
 
@@ -91,8 +108,8 @@
 <script type="text/javascript">
   /* * * CONFIGURATION VARIABLES * * */
   var disqus_shortname = "zhuzhutalk";
-  var disqus_identifier = "http://yoursit.com/about/index.html";
-  var disqus_url = "http://yoursit.com/about/index.html";
+  var disqus_identifier = "http://yoursit.com/2018/01/09/django在mac上初体验/";
+  var disqus_url = "http://yoursit.com/2018/01/09/django在mac上初体验/";
 
   isAgent(getDisqus)
 
@@ -126,7 +143,6 @@
   }
 </script>
 <!-- disqus 公共JS代码 end -->
-
 
 
 
