@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="记录一些自己的感悟和姿势">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>如何在SpringMVC任何地方获取http请求流的request和response | 朱梦迪的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.css" />
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>朱梦迪的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于我</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>如何在SpringMVC任何地方获取http请求流的request和response</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年01月15日</time>
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Spring" class='tag'>Spring</a>
+
+  <a href="/tags/#SpringMVC" class='tag'>SpringMVC</a>
+
+
+            
+          </div>
+          <p>我们在使用SpringMVC作为web框架时，我们会遇到一些情况会需要操作http连接的request和response对象。当然，SpringMVC提供了很好的一种方式：依赖注入，将对象注入到方法中来供我们直接操作。</p>
+<p>但是，在某些地方，我们仍然需要自己去获得request和response对象，比如spring的Advice切面中。这就带来了问题，我们怎么样能在springMVC的任意一个地方获得自身http线程的request和response对象。好在SpringMVC提供了这样的操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();</span><br><span class="line"></span><br><span class="line">// 获取request对象</span><br><span class="line">        final HttpServletRequest request = requestAttributes.getRequest();</span><br><span class="line"></span><br><span class="line">// 获取response对象</span><br><span class="line"> final HttpServletResponse response = requestAttributes.getResponse();</span><br></pre></td></tr></table></figure>
+<p>是不是很方便很舒服😋 没想到获取request和response能这么容易</p>
+<hr>
+<p>依靠这种操作，自己写了一个http请求访问的日志记录AOP Adivice。有需要的小伙伴可以在这基础上修改直接引入到自己的项目中。<br>附上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package com.alifu.aop;</span><br><span class="line"></span><br><span class="line">import com.alibaba.druid.util.StringUtils;</span><br><span class="line">import com.alibaba.fastjson.JSONObject;</span><br><span class="line">import org.apache.tools.ant.util.FileUtils;</span><br><span class="line">import org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line">import org.aspectj.lang.annotation.Around;</span><br><span class="line">import org.aspectj.lang.annotation.Aspect;</span><br><span class="line">import org.aspectj.lang.annotation.Pointcut;</span><br><span class="line">import org.slf4j.Logger;</span><br><span class="line">import org.slf4j.LoggerFactory;</span><br><span class="line">import org.springframework.http.HttpMethod;</span><br><span class="line">import org.springframework.stereotype.Component;</span><br><span class="line">import org.springframework.web.context.ContextLoader;</span><br><span class="line">import org.springframework.web.context.request.RequestContextHolder;</span><br><span class="line">import org.springframework.web.context.request.ServletRequestAttributes;</span><br><span class="line"></span><br><span class="line">import javax.servlet.http.HttpServletRequest;</span><br><span class="line">import javax.servlet.http.HttpServletResponse;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.util.Optional;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @author zhumengdi E-mail:montyzhu7@163.com</span><br><span class="line"> * @version created：2018/1/10 下午7:20</span><br><span class="line"> */</span><br><span class="line">@Aspect</span><br><span class="line">@Component</span><br><span class="line">public class ControllerLogAspect &#123;</span><br><span class="line"></span><br><span class="line">    Logger logger = LoggerFactory.getLogger(getClass());</span><br><span class="line"></span><br><span class="line">    @Pointcut(&quot;within(@org.springframework.stereotype.Controller *)&quot;)</span><br><span class="line">    private static void withinController() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Pointcut(&quot;execution(@org.springframework.web.bind.annotation.RequestMapping * *(..))&quot;)</span><br><span class="line">    private static void executionRequestMapping() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Pointcut(&quot;(&quot; +</span><br><span class="line">            &quot;withinController()&quot; +</span><br><span class="line">            &quot;&amp;&amp; executionRequestMapping())&quot;)</span><br><span class="line">    private static void logHttp() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Around(&quot;logHttp()&quot;)</span><br><span class="line">    public Object aroundCall(final ProceedingJoinPoint joinPoint) throws Throwable &#123;</span><br><span class="line"></span><br><span class="line">        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();</span><br><span class="line"></span><br><span class="line">        final HttpServletRequest request = requestAttributes.getRequest();</span><br><span class="line"></span><br><span class="line">        final String requestURI = request.getRequestURI();</span><br><span class="line"></span><br><span class="line">        final String queryString = request.getQueryString();</span><br><span class="line"></span><br><span class="line">        Optional&lt;String&gt; postData = Optional.&lt;String&gt;empty();</span><br><span class="line"></span><br><span class="line">        if (StringUtils.equals(HttpMethod.POST.name(), request.getMethod())) &#123;</span><br><span class="line">            final String s = FileUtils.readFully(new InputStreamReader(request.getInputStream(), &quot;utf-8&quot;));</span><br><span class="line">            postData = Optional.of(s);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        logger.info(request.getMethod() + &quot;-&quot; + requestURI + &quot;?&quot; + queryString + postData.map(e -&gt; &quot;  postData: &quot; + JSONObject.toJSONString(e)).orElse(&quot;&quot;));</span><br><span class="line"></span><br><span class="line">        long start = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">        final Object proceed = joinPoint.proceed();</span><br><span class="line"></span><br><span class="line">        long end = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">        final HttpServletResponse response = requestAttributes.getResponse();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        logger.info(request.getMethod() + &quot;-&quot; + requestURI + &quot;?&quot; + queryString + postData.map(e -&gt; &quot;  postData: &quot; + JSONObject.toJSONString(e)).orElse(&quot;&quot;) + &quot;  ======  elapsed by [&quot; + (end - start) + &quot;]ms&quot; + &quot;  status: [&quot; + response.getStatus() + &quot;]&quot;);</span><br><span class="line"></span><br><span class="line">        return proceed;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要翻墙</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "zhuzhutalk";
+  var disqus_identifier = "http://yoursit.com/2018/01/15/如何在springMVC任何地方获取http请求流的request和response/";
+  var disqus_url = "http://yoursit.com/2018/01/15/如何在springMVC任何地方获取http请求流的request和response/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2018 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
