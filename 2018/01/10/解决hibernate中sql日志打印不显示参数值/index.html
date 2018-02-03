@@ -52,7 +52,9 @@
   </div>
 </header>
 
-  <main id='post'>
+   <link href="/css/prism.css" rel="stylesheet" />
+ 
+<main id='post'>
   <div class="content">
     <article>
         <section class="content markdown-body">
@@ -71,24 +73,111 @@
             
           </div>
           <p>在Spring JPA的spring配置文件中，我们在bean对象EntityManagerFactory的jpaProperties属性配置hibernate的日志参数，即可使程序执行数据库过程打印出sql语句，代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 配置EntityManagerFactory--&gt;</span><br><span class="line">   &lt;bean id=&quot;entityManagerFactory&quot; class=&quot;org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean&quot;&gt;</span><br><span class="line">       &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;</span><br><span class="line">       &lt;property name=&quot;jpaVendorAdapter&quot;&gt;</span><br><span class="line">           &lt;bean class=&quot;org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter&quot;/&gt;</span><br><span class="line">       &lt;/property&gt;</span><br><span class="line">       &lt;property name=&quot;packagesToScan&quot; value=&quot;com.alifu&quot;/&gt;</span><br><span class="line"></span><br><span class="line">       &lt;property name=&quot;jpaProperties&quot;&gt;</span><br><span class="line">           &lt;props&gt;</span><br><span class="line">               &lt;prop key=&quot;hibernate.ejb.naming_strategy&quot;&gt;org.hibernate.cfg.ImprovedNamingStrategy&lt;/prop&gt;</span><br><span class="line">               &lt;prop key=&quot;hibernate.dialect&quot;&gt;org.hibernate.dialect.MySQL5InnoDBDialect&lt;/prop&gt;</span><br><span class="line">               &lt;prop key=&quot;hibernate.show_sql&quot;&gt;false&lt;/prop&gt;</span><br><span class="line">               &lt;prop key=&quot;hibernate.format_sql&quot;&gt;true&lt;/prop&gt;</span><br><span class="line">               &lt;prop key=&quot;hibernate.hbm2ddl.auto&quot;&gt;update&lt;/prop&gt;</span><br><span class="line">               &lt;prop key=&quot;hibernate.use_sql_comments&quot;&gt;true&lt;/prop&gt;</span><br><span class="line">           &lt;/props&gt;</span><br><span class="line">       &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">   &lt;/bean&gt;</span><br></pre></td></tr></table></figure>
-<p>关键配置在于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;prop key=&quot;hibernate.show_sql&quot;&gt;false&lt;/prop&gt;   // 是否显示sql语句</span><br><span class="line">&lt;prop key=&quot;hibernate.format_sql&quot;&gt;true&lt;/prop&gt;   // 是否格式化显示，更加易读</span><br><span class="line">&lt;prop key=&quot;hibernate.use_sql_comments&quot;&gt;true&lt;/prop&gt;  // 是否在sql语句前加上方法注释</span><br></pre></td></tr></table></figure></p>
+<pre><code class="language-xml"> &lt;!-- 配置EntityManagerFactory--&gt;
+    &lt;bean id=&quot;entityManagerFactory&quot; class=&quot;org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+        &lt;property name=&quot;jpaVendorAdapter&quot;&gt;
+            &lt;bean class=&quot;org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter&quot;/&gt;
+        &lt;/property&gt;
+        &lt;property name=&quot;packagesToScan&quot; value=&quot;com.alifu&quot;/&gt;
+
+        &lt;property name=&quot;jpaProperties&quot;&gt;
+            &lt;props&gt;
+                &lt;prop key=&quot;hibernate.ejb.naming_strategy&quot;&gt;org.hibernate.cfg.ImprovedNamingStrategy&lt;/prop&gt;
+                &lt;prop key=&quot;hibernate.dialect&quot;&gt;org.hibernate.dialect.MySQL5InnoDBDialect&lt;/prop&gt;
+                &lt;prop key=&quot;hibernate.show_sql&quot;&gt;false&lt;/prop&gt;
+                &lt;prop key=&quot;hibernate.format_sql&quot;&gt;true&lt;/prop&gt;
+                &lt;prop key=&quot;hibernate.hbm2ddl.auto&quot;&gt;update&lt;/prop&gt;
+                &lt;prop key=&quot;hibernate.use_sql_comments&quot;&gt;true&lt;/prop&gt;
+            &lt;/props&gt;
+        &lt;/property&gt;
+
+    &lt;/bean&gt;
+</code></pre>
+<p>关键配置在于</p>
+<pre><code class="language-xml"> &lt;prop key=&quot;hibernate.show_sql&quot;&gt;false&lt;/prop&gt;   // 是否显示sql语句
+ &lt;prop key=&quot;hibernate.format_sql&quot;&gt;true&lt;/prop&gt;   // 是否格式化显示，更加易读
+ &lt;prop key=&quot;hibernate.use_sql_comments&quot;&gt;true&lt;/prop&gt;  // 是否在sql语句前加上方法注释
+</code></pre>
 <p>这样配置后，的确在程序运行中，每一次JPA操作数据库执行sql都会在日志中打印出sql语句。</p>
-<p>但是，效果并不尽如人意，其中sql语句中的值参数却是?形式显示在日志中，如下所示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">Hibernate:</span><br><span class="line">    select</span><br><span class="line">        alipaymemb0_.auth_appid as auth_app1_0_0_,</span><br><span class="line">        alipaymemb0_.user_uni_id as user_uni2_0_0_,</span><br><span class="line">        alipaymemb0_.user_uni_id_type as user_uni3_0_0_,</span><br><span class="line">        alipaymemb0_.balance as balance4_0_0_,</span><br><span class="line">        alipaymemb0_.birth as birth5_0_0_,</span><br><span class="line">        alipaymemb0_.biz_card_no as biz_card6_0_0_,</span><br><span class="line">        alipaymemb0_.card_template_id as card_tem7_0_0_,</span><br><span class="line">        alipaymemb0_.cell as cell8_0_0_,</span><br><span class="line">        alipaymemb0_.external_card_no as external9_0_0_,</span><br><span class="line">        alipaymemb0_.gender as gender10_0_0_,</span><br><span class="line">        alipaymemb0_.level as level11_0_0_,</span><br><span class="line">        alipaymemb0_.name as name12_0_0_,</span><br><span class="line">        alipaymemb0_.open_card_channel as open_ca13_0_0_,</span><br><span class="line">        alipaymemb0_.open_card_channel_id as open_ca14_0_0_,</span><br><span class="line">        alipaymemb0_.open_date as open_da15_0_0_,</span><br><span class="line">        alipaymemb0_.point as point16_0_0_,</span><br><span class="line">        alipaymemb0_.valid_date as valid_d17_0_0_</span><br><span class="line">    from</span><br><span class="line">        alipay_member_card alipaymemb0_</span><br><span class="line">    where</span><br><span class="line">        alipaymemb0_.auth_appid=?</span><br><span class="line">        and alipaymemb0_.user_uni_id=?</span><br><span class="line">        and alipaymemb0_.user_uni_id_type=?</span><br><span class="line">Hibernate:</span><br><span class="line">    /* delete com.alifu.model.alimodel.AlipayMemberCard */ delete</span><br><span class="line">        from</span><br><span class="line">            alipay_member_card</span><br><span class="line">        where</span><br><span class="line">            auth_appid=?</span><br><span class="line">            and user_uni_id=?</span><br><span class="line">            and user_uni_id_type=?</span><br><span class="line">Hibernate:</span><br><span class="line">    /* insert com.alifu.model.alimodel.AlipayMemberCard</span><br><span class="line">        */ insert</span><br><span class="line">        into</span><br><span class="line">            alipay_member_card</span><br><span class="line">            (balance, birth, biz_card_no, card_template_id, cell, external_card_no, gender, level, name, open_card_channel, open_card_channel_id, open_date, point, valid_date, auth_appid, user_uni_id, user_uni_id_type)</span><br><span class="line">        values</span><br><span class="line">            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</span><br></pre></td></tr></table></figure></p>
+<p>但是，效果并不尽如人意，其中sql语句中的值参数却是?形式显示在日志中，如下所示</p>
+<pre><code class="language-sql">Hibernate:
+    select
+        alipaymemb0_.auth_appid as auth_app1_0_0_,
+        alipaymemb0_.user_uni_id as user_uni2_0_0_,
+        alipaymemb0_.user_uni_id_type as user_uni3_0_0_,
+        alipaymemb0_.balance as balance4_0_0_,
+        alipaymemb0_.birth as birth5_0_0_,
+        alipaymemb0_.biz_card_no as biz_card6_0_0_,
+        alipaymemb0_.card_template_id as card_tem7_0_0_,
+        alipaymemb0_.cell as cell8_0_0_,
+        alipaymemb0_.external_card_no as external9_0_0_,
+        alipaymemb0_.gender as gender10_0_0_,
+        alipaymemb0_.level as level11_0_0_,
+        alipaymemb0_.name as name12_0_0_,
+        alipaymemb0_.open_card_channel as open_ca13_0_0_,
+        alipaymemb0_.open_card_channel_id as open_ca14_0_0_,
+        alipaymemb0_.open_date as open_da15_0_0_,
+        alipaymemb0_.point as point16_0_0_,
+        alipaymemb0_.valid_date as valid_d17_0_0_
+    from
+        alipay_member_card alipaymemb0_
+    where
+        alipaymemb0_.auth_appid=?
+        and alipaymemb0_.user_uni_id=?
+        and alipaymemb0_.user_uni_id_type=?
+Hibernate:
+    /* delete com.alifu.model.alimodel.AlipayMemberCard */ delete
+        from
+            alipay_member_card
+        where
+            auth_appid=?
+            and user_uni_id=?
+            and user_uni_id_type=?
+Hibernate:
+    /* insert com.alifu.model.alimodel.AlipayMemberCard
+        */ insert
+        into
+            alipay_member_card
+            (balance, birth, biz_card_no, card_template_id, cell, external_card_no, gender, level, name, open_card_channel, open_card_channel_id, open_date, point, valid_date, auth_appid, user_uni_id, user_uni_id_type)
+        values
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+</code></pre>
 <p>这样的显示，显然不符合我们的预期，也对日后的问题排查带来了难度。我们必须要让具体的参数值也显示在sql中。</p>
 <p><strong>为了实现这个效果。</strong></p>
 <ol>
 <li><p>引入第三方jar包</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--打印jdbc日志--&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.googlecode.log4jdbc&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;log4jdbc&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.2&lt;/version&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-xml">     &lt;!--打印jdbc日志--&gt;
+     &lt;dependency&gt;
+         &lt;groupId&gt;com.googlecode.log4jdbc&lt;/groupId&gt;
+         &lt;artifactId&gt;log4jdbc&lt;/artifactId&gt;
+         &lt;version&gt;1.2&lt;/version&gt;
+      &lt;/dependency&gt;
+</code></pre>
 </li>
 <li><p>配置日志级别</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">log4j.logger.jdbc.sqltiming=info</span><br><span class="line">log4j.logger.jdbc.audit=xxx</span><br><span class="line">log4j.logger.jdbc.sqlonly=xxx</span><br><span class="line">log4j.logger.jdbc.resultset=xxx</span><br><span class="line"></span><br><span class="line"># 推荐,</span><br><span class="line">log4j.logger.jdbc=warn</span><br></pre></td></tr></table></figure>
+<pre><code class="language-properties">log4j.logger.jdbc.sqltiming=info
+log4j.logger.jdbc.audit=xxx
+log4j.logger.jdbc.sqlonly=xxx
+log4j.logger.jdbc.resultset=xxx
+
+# 推荐,
+log4j.logger.jdbc=warn
+</code></pre>
 </li>
 <li><p>mysql配置 （关键步骤）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#改变jdbc连接URL 和 jdbc的驱动类，原理是由log4jdbc代理java基础库中的JDBC，实现日志打印</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">jdbc.url=jdbc:log4jdbc:mysql://192.168.2.119:3306/rdms-pollution?useUnicode=true&amp;characterEncoding=utf-8</span><br><span class="line">jdbc.username=root</span><br><span class="line">jdbc.password=root</span><br><span class="line">jdbc.driverClassName =net.sf.log4jdbc.DriverSpy</span><br></pre></td></tr></table></figure>
+<pre><code class="language-properties">#改变jdbc连接URL 和 jdbc的驱动类，原理是由log4jdbc代理java基础库中的JDBC，实现日志打印
+jdbc.url=jdbc:log4jdbc:mysql://192.168.2.119:3306/rdms-pollution?useUnicode=true&amp;characterEncoding=utf-8
+jdbc.username=root
+jdbc.password=root
+jdbc.driverClassName =net.sf.log4jdbc.DriverSpy
+</code></pre>
 </li>
 <li><p>entityManagerFactory中jpaProperties可以去掉hibernate的日志参数了（可选步骤）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;prop key=&quot;hibernate.show_sql&quot;&gt;false&lt;/prop&gt;   // 是否显示sql语句</span><br><span class="line">&lt;prop key=&quot;hibernate.format_sql&quot;&gt;true&lt;/prop&gt;   // 是否格式化显示，更加易读</span><br><span class="line">&lt;prop key=&quot;hibernate.use_sql_comments&quot;&gt;true&lt;/prop&gt;  // 是否在sql语句前加上方法注释</span><br></pre></td></tr></table></figure>
+<pre><code class="language-xml">&lt;prop key=&quot;hibernate.show_sql&quot;&gt;false&lt;/prop&gt;   // 是否显示sql语句
+&lt;prop key=&quot;hibernate.format_sql&quot;&gt;true&lt;/prop&gt;   // 是否格式化显示，更加易读
+&lt;prop key=&quot;hibernate.use_sql_comments&quot;&gt;true&lt;/prop&gt;  // 是否在sql语句前加上方法注释
+</code></pre>
 </li>
 </ol>
 
@@ -149,6 +238,11 @@
   }
 </script>
 <!-- disqus 公共JS代码 end -->
+
+
+
+
+
 
 
 
@@ -222,6 +316,11 @@
   }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+
+
+
+<script src="/js/prism.js"></script>
+
 
 
 </body>

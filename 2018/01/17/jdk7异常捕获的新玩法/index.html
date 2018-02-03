@@ -52,7 +52,9 @@
   </div>
 </header>
 
-  <main id='post'>
+   <link href="/css/prism.css" rel="stylesheet" />
+ 
+<main id='post'>
   <div class="content">
     <article>
         <section class="content markdown-body">
@@ -71,12 +73,76 @@
             
           </div>
           <p>1.catch多种异常抛出一种异常</p>
-<p>在JDK1.7之前catch多个异常是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">try&#123;  </span><br><span class="line"></span><br><span class="line">//逻辑代码  </span><br><span class="line"></span><br><span class="line">&#125;catch (IOException ex) &#123;  </span><br><span class="line">     logger.log(ex);  </span><br><span class="line">     throw new SpecialException();  </span><br><span class="line">catch (SQLException ex) &#123;  </span><br><span class="line">     logger.log(ex);  </span><br><span class="line">     throw new SpecialException();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>JDK1.7及以后可以这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">try&#123;  </span><br><span class="line"></span><br><span class="line">//逻辑代码  </span><br><span class="line"></span><br><span class="line">&#125;catch (IOException | SQLException ex) &#123;  </span><br><span class="line">     logger.log(ex);  </span><br><span class="line">     throw new SpecialException();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在JDK1.7之前catch多个异常是这样的：</p>
+<pre><code class="language-java">        try{  
+
+        //逻辑代码  
+
+        }catch (IOException ex) {  
+             logger.log(ex);  
+             throw new SpecialException();  
+        catch (SQLException ex) {  
+             logger.log(ex);  
+             throw new SpecialException();  
+        }
+</code></pre>
+<p>JDK1.7及以后可以这样：</p>
+<pre><code class="language-java">        try{  
+
+        //逻辑代码  
+
+        }catch (IOException | SQLException ex) {  
+             logger.log(ex);  
+             throw new SpecialException();  
+        }
+</code></pre>
 <p>2.在JDK1.7以前的版本，在方法声明中声明抛出的异常如果在方法体内没有抛出时不被允许的,如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">static class FirstException extends Exception &#123;   </span><br><span class="line">      </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">static class SecondException extends Exception &#123;  </span><br><span class="line">      </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">public void rethrowException(String exceptionName) throws FirstException, SecondException,Exception &#123;  </span><br><span class="line">      </span><br><span class="line">  try &#123;  </span><br><span class="line">        </span><br><span class="line">    if (exceptionName.equals(&quot;First&quot;)) &#123;  </span><br><span class="line">        //如果异常名称为&quot;First&quot;，则抛出异常一  </span><br><span class="line">      throw new FirstException();  </span><br><span class="line">        </span><br><span class="line">    &#125; else &#123;  </span><br><span class="line">        //否则的话，则抛出异常二  </span><br><span class="line">      throw new SecondException();  </span><br><span class="line">        </span><br><span class="line">    &#125;  </span><br><span class="line">      </span><br><span class="line">  &#125; catch (Exception e) &#123;  </span><br><span class="line">        </span><br><span class="line">    throw e;  </span><br><span class="line">  &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">static class FirstException extends Exception {   
+
+}  
+
+static class SecondException extends Exception {  
+
+}  
+
+public void rethrowException(String exceptionName) throws FirstException, SecondException,Exception {  
+
+  try {  
+
+    if (exceptionName.equals(&quot;First&quot;)) {  
+        //如果异常名称为&quot;First&quot;，则抛出异常一  
+      throw new FirstException();  
+
+    } else {  
+        //否则的话，则抛出异常二  
+      throw new SecondException();  
+
+    }  
+
+  } catch (Exception e) {  
+
+    throw e;  
+  }  
+}
+</code></pre>
 <p>JDK1.7及以后版本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">static class FirstException extends Exception &#123;   </span><br><span class="line">      </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">static class SecondException extends Exception &#123;  </span><br><span class="line">      </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">public void rethrowException(String exceptionName) throws FirstException, SecondException,Exception &#123;  </span><br><span class="line">    try &#123;  </span><br><span class="line">      // 逻辑代码  </span><br><span class="line">    &#125;catch (Exception e) &#123;  </span><br><span class="line">          </span><br><span class="line">      throw e;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">static class FirstException extends Exception {   
+
+}  
+
+static class SecondException extends Exception {  
+
+}  
+
+public void rethrowException(String exceptionName) throws FirstException, SecondException,Exception {  
+    try {  
+      // 逻辑代码  
+    }catch (Exception e) {  
+
+      throw e;  
+    }  
+}
+</code></pre>
 
         </section>
     </article>
@@ -135,6 +201,11 @@
   }
 </script>
 <!-- disqus 公共JS代码 end -->
+
+
+
+
+
 
 
 
@@ -208,6 +279,11 @@
   }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+
+
+
+<script src="/js/prism.js"></script>
+
 
 
 </body>
