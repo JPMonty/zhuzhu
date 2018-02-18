@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="记录一些自己的感悟和姿势">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>排序之外排序 | 朱梦迪的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.css" />
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>朱梦迪的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于我</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+   <link href="/css/prism.css" rel="stylesheet" />
+ 
+<main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>排序之外排序</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年02月18日</time>
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#算法 排序" class='tag'>算法 排序</a>
+
+
+            
+          </div>
+          <h1 id="排序之外排序"><a href="#排序之外排序" class="headerlink" title="排序之外排序"></a>排序之外排序</h1><p>有时，待排序的文件很大，计算机内存不能容纳整个文件，这时候对文件就不能使用内部排序了（这里做一下说明，其实所有的排序都是在内存中做的，这里说的内部排序是指待排序的内容在内存中就可以完成，而外部排序是指待排序的内容不能在内存中一下子完成，它需要做内外存的内容交换），外部排序常采用的排序方法也是归并排序，这种归并方法由两个不同的阶段组成:</p>
+<ol>
+<li><p>采用适当的内部排序方法对输入文件的每个片段进行排序，将排好序的片段（成为归并段）写到外部存储器中（通常由一个可用的磁盘作为临时缓冲区），这样临时缓冲区中的每个归并段的内容是有序的。</p>
+</li>
+<li><p>利用归并算法，归并第一阶段生成的归并段，直到只剩下一个归并段为止。</p>
+</li>
+</ol>
+<p>例如要对外存中4500个记录进行归并，而内存大小只能容纳750个记录，在第一阶段，我们可以每次读取750个记录进行排序，这样可以分六次读取，进行排序，可以得到六个有序的归并段，如下图：</p>
+<p><img src="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png" alt="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png"></p>
+<p>每个归并段的大小是750个记录，记住，这些归并段已经全部写到临时缓冲区（由一个可用的磁盘充当）内了，这是第一步的排序结果。</p>
+<p>完成第二步该怎么做呢？这时候归并算法就有用处了，算法描述如下：</p>
+<ol>
+<li><p>将内存空间划分为三份，每份大小250个记录，其中两个用作输入缓冲区，另外一个用作输出缓冲区。首先对Segment_1和Segment_2进行归并，先从每个归并段中读取250个记录到输入缓冲区，对其归并，归并结果放到输出缓冲区，当输出缓冲区满后，将其写道临时缓冲区内，如果某个输入缓冲区空了，则从相应的归并段中再读取250个记录进行继续归并，反复以上步骤，直至Segment_1和Segment_2全都排好序，形成一个大小为1500的记录，然后对Segment_3和Segment_4、Segment_5和Segment_6进行同样的操作。</p>
+</li>
+<li><p>对归并好的大小为1500的记录进行如同步骤1一样的操作，进行继续排序，直至最后形成大小为4500的归并段，至此，排序结束。</p>
+</li>
+</ol>
+<p>可以用一个图示表示上述算法的归并效果：<br><img src="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png" alt="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png"><br>以上对外部排序如何使用归并算法进行排序进行了简要总结，提高外部排序需要考虑以下问题：</p>
+<ol>
+<li><p>如何减少排序所需的归并趟数。</p>
+</li>
+<li><p>如果高效利用程序缓冲区，使得输入、输出和CPU运行尽可能地重叠。</p>
+</li>
+<li><p>如何生成初始归并段（Segment）和如何对归并段进行归并。</p>
+</li>
+</ol>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要翻墙</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#排序之外排序"><span class="toc-number">1.</span> <span class="toc-text">排序之外排序</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "zhuzhutalk";
+  var disqus_identifier = "http://yoursit.com/2018/02/18/排序之外排序/";
+  var disqus_url = "http://yoursit.com/2018/02/18/排序之外排序/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2018 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+
+
+
+<script src="/js/prism.js"></script>
+
+
+
+</body>
+</html>
