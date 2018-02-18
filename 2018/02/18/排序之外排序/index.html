@@ -82,7 +82,7 @@
 </li>
 </ol>
 <p>例如要对外存中4500个记录进行归并，而内存大小只能容纳750个记录，在第一阶段，我们可以每次读取750个记录进行排序，这样可以分六次读取，进行排序，可以得到六个有序的归并段，如下图：</p>
-<p><img src="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png" alt="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png"></p>
+<p><img src="https://d1ro8r1rbfn3jf.cloudfront.net/ms_150763/ZR3WMv5pwDI7wOjSyKMkmDdxDndwez/1172457-20170824204107496-53968655.png%2B%2528859%25C3%259758%2529%2B2018-02-18%2B23-06-40.png?Expires=1519052805&amp;Signature=QZF~jaig8-FFiXMIwi1SbtZQUBWDUAyxZwrPhE4jO~L0mL~JsPPU9rXmm1uylHIvG8j2GM-PhMJchClaYggxG4SOvJTzS-KcUldcrJveEZdy-Vpdd5I8C7Be2BcUZywSf0ars6BNbpfv8yZ5EKmFwyyau4CKCJ4sA-~2HTZtvGZ4V4GhoSX4VrXE50gZwSf--Sfry6tshbepYEAEhuCN0gWS5~TKcV1LBsLKukDqa9wd-2v8E3KuSIgbbbcz0Nr7dKMMY686YTD7jl1sUe4YTgvqONeL1daXc7jq5Hgr4UcReqtINmi3-P~A2fGTf4Nrd1UHakuZ9Q6ZuuWztt5lQA__&amp;Key-Pair-Id=APKAJHEJJBIZWFB73RSA" alt="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png"></p>
 <p>每个归并段的大小是750个记录，记住，这些归并段已经全部写到临时缓冲区（由一个可用的磁盘充当）内了，这是第一步的排序结果。</p>
 <p>完成第二步该怎么做呢？这时候归并算法就有用处了，算法描述如下：</p>
 <ol>
@@ -91,7 +91,7 @@
 <li><p>对归并好的大小为1500的记录进行如同步骤1一样的操作，进行继续排序，直至最后形成大小为4500的归并段，至此，排序结束。</p>
 </li>
 </ol>
-<p>可以用一个图示表示上述算法的归并效果：<br><img src="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png" alt="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png"><br>以上对外部排序如何使用归并算法进行排序进行了简要总结，提高外部排序需要考虑以下问题：</p>
+<p>可以用一个图示表示上述算法的归并效果：<br><img src="https://d1ro8r1rbfn3jf.cloudfront.net/ms_150763/TjR1YTwV8P1Rsc1RwO0DtV01J0bOMJ/1172457-20170824210101886-1776687021.png%2B%2528856%25C3%2597372%2529%2B2018-02-18%2B23-07-26.png?Expires=1519052849&amp;Signature=HBndvMttxU1Y~EVK2U11HJ7pKI7hwnViiEFIpq1UBkFpG~tZGyV2m2504trvo0oPwaKYDLNcPg9QfCSut9HjpVMdrigjCjKANOVJDHJ3to3c8TNKDz5EQNG5znoQYTKm~v6PZqUkgvTnquRnWVTEHVCqtwwpcu6WJ5Ee--~mTWbrTVRTgUtmVMmQL9vM2-Y3g2njetJQN1w4-0HQFdJP46eNL3~YxYBN3uNPlI8Vv9tqaCgsQw9BFQMVMCiwRX-YqoODgOwgcQS2dliI1Pp5LOL8I-RzQlg3K0HTJAgHhBhKHoS6Hs97oGj09jHGHJSYcev6BEtmj9Wtn014D4GJfg__&amp;Key-Pair-Id=APKAJHEJJBIZWFB73RSA" alt="https://images2017.cnblogs.com/blog/1172457/201708/1172457-20170824210101886-1776687021.png"><br>以上对外部排序如何使用归并算法进行排序进行了简要总结，提高外部排序需要考虑以下问题：</p>
 <ol>
 <li><p>如何减少排序所需的归并趟数。</p>
 </li>
