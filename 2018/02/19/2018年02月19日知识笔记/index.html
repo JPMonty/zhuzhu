@@ -83,7 +83,7 @@ private void inflateTable(int toSize) {
         initHashSeedAsNeeded(capacity);
     }
 </code></pre>
-<p>inflateTable这个方法用于为主干数组table在内存中分配存储空间，通过roundUpToPowerOf2(toSize)可以确保capacity为大于或等于toSize的最接近toSize的二次幂，比如toSize=13,则capacity=16;to_size=16,capacity=16;to_size=17,capacity=32.</p>
+<p><code>inflateTable</code>这个方法用于为主干数组table在内存中分配存储空间，通过<code>roundUpToPowerOf2(toSize)</code>可以确保capacity为大于或等于toSize的最接近toSize的二次幂，比如toSize=13,则capacity=16;to_size=16,capacity=16;to_size=17,capacity=32.</p>
 <pre><code class="language-java">private static int roundUpToPowerOf2(int number) {
         // assert number &gt;= 0 : &quot;number must be non-negative&quot;;
         return number &gt;= MAXIMUM_CAPACITY
@@ -116,10 +116,10 @@ private void inflateTable(int toSize) {
         return i - (i &gt;&gt;&gt; 1);
     }
 </code></pre>
-<p>看了源码以后，我很难理解,我思考了良久还是十分困惑。</p>
+<p>看了源码以后，我很难理解,我思考了良久还是十分困惑。。。。。。</p>
 <p>于是我百度了是否有其他人对这个方法进行过研究解释，果然，被我找到了。</p>
 <p><a href="http://type.so/java/java-lang-integer.html" target="_blank" rel="noopener">http://type.so/java/java-lang-integer.html</a></p>
-<p>原来，想法十分简单却很巧妙，1、2、4、8、16的数字也不是随便取得。。。。</p>
+<p>原来，想法十分简单却很巧妙，1、2、4、8、16的数字也不是随便取得。。。。。。</p>
 <hr>
 <p>最后，附上另一个Integer的方法：取一个整数最低位bit的值</p>
 <pre><code class="language-java"> /**
