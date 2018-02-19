@@ -75,7 +75,7 @@
             
           </div>
           <p>今天下午在看<a href="http://www.cnblogs.com/chengxiao/p/6059914.html" target="_blank" rel="noopener">HashMap实现原理及源码分析</a>,我对HashMap中有一处源码产生了兴趣。</p>
-<pre><code class="java">// inflateTable方法
+<pre><code class="language-java">// inflateTable方法
 private void inflateTable(int toSize) {
         int capacity = roundUpToPowerOf2(toSize);//capacity一定是2的次幂
         threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);//此处为threshold赋值，取capacity*loadFactor和MAXIMUM_CAPACITY+1的最小值，capaticy一定不会超过MAXIMUM_CAPACITY，除非loadFactor大于1
@@ -84,7 +84,7 @@ private void inflateTable(int toSize) {
     }
 </code></pre>
 <p>inflateTable这个方法用于为主干数组table在内存中分配存储空间，通过roundUpToPowerOf2(toSize)可以确保capacity为大于或等于toSize的最接近toSize的二次幂，比如toSize=13,则capacity=16;to_size=16,capacity=16;to_size=17,capacity=32.</p>
-<pre><code class="java">private static int roundUpToPowerOf2(int number) {
+<pre><code class="language-java">private static int roundUpToPowerOf2(int number) {
         // assert number &gt;= 0 : &quot;number must be non-negative&quot;;
         return number &gt;= MAXIMUM_CAPACITY
                 ? MAXIMUM_CAPACITY
@@ -92,7 +92,7 @@ private void inflateTable(int toSize) {
     }
 </code></pre>
 <p>这两段代码，并不难理解。<br><code>roundUpToPowerOf2</code>中使用了<code>Integer.highestOneBit</code>方法,顾名思义就是取得一个整数最高位bit的值（这个函数的作用是取 number 这个数的二进制形式最左边的最高一位且高位后面全部补零，最后返回int型的结果），我对这个方法是如何做到的产生了浓厚的兴趣，于是我查看了源码。</p>
-<pre><code class="java">/**
+<pre><code class="language-java">/**
      * Returns an {@code int} value with at most a single one-bit, in the
      * position of the highest-order (&quot;leftmost&quot;) one-bit in the specified
      * {@code int} value.  Returns zero if the specified value has no
@@ -121,7 +121,7 @@ private void inflateTable(int toSize) {
 <p>原来，想法十分简单却很巧妙，1、2、4、8、16的数字也不是随便取得。。。。</p>
 <hr>
 <p>最后，附上另一个Integer的方法：取一个整数最低位bit的值</p>
-<pre><code class="java"> /**
+<pre><code class="language-java"> /**
      * Returns an {@code int} value with at most a single one-bit, in the
      * position of the lowest-order (&quot;rightmost&quot;) one-bit in the specified
      * {@code int} value.  Returns zero if the specified value has no
