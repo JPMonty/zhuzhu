@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="记录一些自己的感悟和姿势">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>2018年02月19日知识笔记 | 朱梦迪的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.css" />
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>朱梦迪的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于我</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+   <link href="/css/prism.css" rel="stylesheet" />
+ 
+<main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>2018年02月19日知识笔记</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年02月19日</time>
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#笔记" class='tag'>笔记</a>
+
+  <a href="/tags/#知识" class='tag'>知识</a>
+
+
+            
+          </div>
+          <p>今天下午在看<a href="http://www.cnblogs.com/chengxiao/p/6059914.html" target="_blank" rel="noopener">HashMap实现原理及源码分析</a>,我对HashMap中有一处源码产生了兴趣。</p>
+<pre><code class="java">// inflateTable方法
+private void inflateTable(int toSize) {
+        int capacity = roundUpToPowerOf2(toSize);//capacity一定是2的次幂
+        threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);//此处为threshold赋值，取capacity*loadFactor和MAXIMUM_CAPACITY+1的最小值，capaticy一定不会超过MAXIMUM_CAPACITY，除非loadFactor大于1
+        table = new Entry[capacity];
+        initHashSeedAsNeeded(capacity);
+    }
+</code></pre>
+<p>inflateTable这个方法用于为主干数组table在内存中分配存储空间，通过roundUpToPowerOf2(toSize)可以确保capacity为大于或等于toSize的最接近toSize的二次幂，比如toSize=13,则capacity=16;to_size=16,capacity=16;to_size=17,capacity=32.</p>
+<pre><code class="java">private static int roundUpToPowerOf2(int number) {
+        // assert number &gt;= 0 : &quot;number must be non-negative&quot;;
+        return number &gt;= MAXIMUM_CAPACITY
+                ? MAXIMUM_CAPACITY
+                : (number &gt; 1) ? Integer.highestOneBit((number - 1) &lt;&lt; 1) : 1;
+    }
+</code></pre>
+<p>这两段代码，并不难理解。</p>
+<p><code>roundUpToPowerOf2</code>中使用了<code>Integer.highestOneBit</code>方法,顾名思义就是取得一个整数最高位bit的值（这个函数的作用是取 number 这个数的二进制形式最左边的最高一位且高位后面全部补零，最后返回int型的结果），我对这个方法是如何做到的产生了浓厚的兴趣，于是我查看了源码。</p>
+<pre><code class="java">/**
+     * Returns an {@code int} value with at most a single one-bit, in the
+     * position of the highest-order (&quot;leftmost&quot;) one-bit in the specified
+     * {@code int} value.  Returns zero if the specified value has no
+     * one-bits in its two&#39;s complement binary representation, that is, if it
+     * is equal to zero.
+     *
+     * @param i the value whose highest one bit is to be computed
+     * @return an {@code int} value with a single one-bit, in the position
+     *     of the highest-order one-bit in the specified value, or zero if
+     *     the specified value is itself equal to zero.
+     * @since 1.5
+     */
+    public static int highestOneBit(int i) {
+        // HD, Figure 3-1
+        i |= (i &gt;&gt;  1);
+        i |= (i &gt;&gt;  2);
+        i |= (i &gt;&gt;  4);
+        i |= (i &gt;&gt;  8);
+        i |= (i &gt;&gt; 16);
+        return i - (i &gt;&gt;&gt; 1);
+    }
+</code></pre>
+<p>看了源码以后，我很难理解,我思考了良久还是十分困惑。</p>
+<p>于是我百度了是否有其他人对这个方法进行过研究解释，果然，被我找到了。</p>
+<p><a href="http://type.so/java/java-lang-integer.html" target="_blank" rel="noopener">http://type.so/java/java-lang-integer.html</a></p>
+<p>原来，想法十分简单却很巧妙，1、2、4、8、16的数字也不是随便取得。。。。</p>
+<hr>
+<p>最后，附上另一个Integer的方法：取一个整数最低位bit的值</p>
+<pre><code class="java"> /**
+     * Returns an {@code int} value with at most a single one-bit, in the
+     * position of the lowest-order (&quot;rightmost&quot;) one-bit in the specified
+     * {@code int} value.  Returns zero if the specified value has no
+     * one-bits in its two&#39;s complement binary representation, that is, if it
+     * is equal to zero.
+     *
+     * @param i the value whose lowest one bit is to be computed
+     * @return an {@code int} value with a single one-bit, in the position
+     *     of the lowest-order one-bit in the specified value, or zero if
+     *     the specified value is itself equal to zero.
+     * @since 1.5
+     */
+    public static int lowestOneBit(int i) {
+        // HD, Section 2-1
+        return i &amp; -i;
+    }
+</code></pre>
+<pre><code>这个就好理解多了，在纸上画了画，思考了一会我就明白了是如何做到的了。
+</code></pre>
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要翻墙</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "zhuzhutalk";
+  var disqus_identifier = "http://yoursit.com/2018/02/19/2018年02月19日知识笔记/";
+  var disqus_url = "http://yoursit.com/2018/02/19/2018年02月19日知识笔记/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2018 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+
+
+
+<script src="/js/prism.js"></script>
+
+
+
+</body>
+</html>
