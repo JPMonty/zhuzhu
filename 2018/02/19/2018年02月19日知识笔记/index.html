@@ -91,7 +91,8 @@ private void inflateTable(int toSize) {
                 : (number &gt; 1) ? Integer.highestOneBit((number - 1) &lt;&lt; 1) : 1;
     }
 </code></pre>
-<p>这两段代码，并不难理解。<br><code>roundUpToPowerOf2</code>中使用了<code>Integer.highestOneBit</code>方法,顾名思义就是取得一个整数最高位bit的值（这个函数的作用是取 number 这个数的二进制形式最左边的最高一位且高位后面全部补零，最后返回int型的结果），我对这个方法是如何做到的产生了浓厚的兴趣，于是我查看了源码。</p>
+<p>这两段代码，并不难理解。</p>
+<p><code>roundUpToPowerOf2</code>中使用了<code>Integer.highestOneBit</code>方法,顾名思义就是取得一个整数最高位bit的值（这个函数的作用是取 number 这个数的二进制形式最左边的最高一位且高位后面全部补零，最后返回int型的结果），我对这个方法是如何做到的产生了浓厚的兴趣，于是我查看了源码。</p>
 <pre><code class="language-java">/**
      * Returns an {@code int} value with at most a single one-bit, in the
      * position of the highest-order (&quot;leftmost&quot;) one-bit in the specified
